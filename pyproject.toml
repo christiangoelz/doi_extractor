@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "doi_extractor"
 version = "0.1.0"
-description = "A package to extract DOIs from BibTeX, RIS, and text files"
+description = "A package to extract DOIs from BibTeX, and RIS files"
 readme = "README.md"
 requires-python = ">=3.6"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "Christian Goelz", email = "c.goelz@gmx.de" }
 ]
 license = { text = "MIT License" }
 classifiers = [
