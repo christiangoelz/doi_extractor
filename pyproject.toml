@@ -18,7 +18,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "bibtexparser",
+    "bibtexparser==2.0.0b7",
 ]
 
 [project.urls]
