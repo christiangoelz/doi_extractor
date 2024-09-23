@@ -40,7 +40,7 @@ class DOIExtractor:
 
     def save(self, out_file):
         with open(out_file, 'w') as file:
-            file.write(','.join(self.dois))
+            file.write(', '.join(self.dois))
 
     ###### Core extractor functions ######
     def __extract_dois_from_bibtex(self):
