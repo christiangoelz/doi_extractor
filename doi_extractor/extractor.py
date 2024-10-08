@@ -7,6 +7,7 @@ class DOIExtractor:
     def __init__(self, file):
         self.dois = []
         self.no_dois = []
+        self.lens_string = ''
 
         # Check inputs
         valid_files = ['bib', 'ris']
@@ -37,11 +38,39 @@ class DOIExtractor:
         if len(self.no_dois) > 0:
             print(f'No dois found for {self.no_dois}')
         return self
+    
+    def to_lens_string(self):
+        
+        if len(self.dois) == 0:
+            print('No dois found. Please run extract() method first')
+        
+        field = 'citation_id'
+        logic = 'OR'
+        for doi in self.dois[:-1]:
+            self.lens_string += f'{field}: "{doi}" {logic} '
+        self.lens_string += f'{field}: "{self.dois[-1]}"'
+        
+        return self
 
-    def save(self, out_file):
+    def save_dois(self, out_file='dois.txt'):
+
+        if len(self.dois) == 0:
+            print('No dois found. Please run extract() method first')
+
         with open(out_file, 'w') as file:
             file.write(', '.join(self.dois))
+    
 
+    def save_lens_string(self, out_file='lens_search.txt'):
+        
+        if len(self.dois) == 0:
+            print('No dois found. Please run extract() and to_lens_string() methods first')
+        elif len(self.lens_string) == 0:
+            print('No dois found. Please run to_lens_string() methods first')
+        
+        with open(out_file, 'w') as file:
+            file.write(self.lens_string)
+    
     ###### Core extractor functions ######
     def __extract_dois_from_bibtex(self):
         bib_database = bibtexparser.parse_file(self.file)
@@ -81,22 +110,21 @@ class DOIExtractor:
         if doi[:3] == 'doi':
             doi = doi.split('doi:')[-1]
         elif doi[:4] == 'http':
-            doi = doi.split('https://doi.org/') [-1]
+            doi = doi.split('https://doi.org/')[-1]
 
         return doi
     
 def main():
-    if len(sys.argv) != 3:
-        print('Usage: python extractor.py <input_file> <output_file>')
+    if len(sys.argv) != 2:
+        print('Usage: python extractor.py <input_file>')
         sys.exit(1)
 
     input_file = sys.argv[1]
-    output_file = sys.argv[2]
-
     extractor = DOIExtractor(input_file)
     extractor.extract()
-    extractor.save(output_file)
-
+    extractor.to_lens_string()
+    extractor.save_dois()
+    extractor.save_lens_string()
 
 if __name__ == '__main__':
     main()
