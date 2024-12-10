@@ -34,5 +34,19 @@ class TestDOIExtractor(unittest.TestCase):
         extractor.extract()
         self.assertEqual(len(extractor.dois), 0)
 
+    def test_extract_dois_from_ris_double(self):
+        extractor = DOIExtractor('tests/sample_double.ris')
+        extractor.extract()
+        self.assertIn('10.1234/example1', extractor.dois)
+        self.assertIn('10.1234/example2', extractor.dois)
+        self.assertIn('10.1234/example3', extractor.dois)
+
+    def test_extract_dois_from_bib_double(self):
+        extractor = DOIExtractor('tests/sample_double.bib')
+        extractor.extract()
+        self.assertIn('10.1234/example1', extractor.dois)
+        self.assertIn('10.1234/example2', extractor.dois)
+        self.assertIn('10.1234/example3', extractor.dois)
+
 if __name__ == '__main__':
     unittest.main()

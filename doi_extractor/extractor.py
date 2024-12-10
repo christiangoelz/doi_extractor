@@ -76,14 +76,17 @@ class DOIExtractor:
         bib_database = bibtexparser.parse_file(self.file)
         
         for entry in bib_database.entries:
-            if 'doi' in entry:
-                doi = self.__clean_doi(entry['doi'])
-                self.dois.append(doi)
-            elif 'DOI' in entry:
-                doi = self.__clean_doi(entry['DOI'])
-                self.dois.append(doi)
+            doi = entry.get('doi') or entry.get('DOI')
+
+            if doi:
+                doi = self.__clean_doi(doi.value)
+                if isinstance(doi, list):
+                    self.dois.extend(doi)
+                else:
+                    self.dois.append(doi)
             else:
                 self.no_dois.append(entry['title'])
+
 
 
     def __extract_dois_from_ris(self):
@@ -111,9 +114,11 @@ class DOIExtractor:
             doi = doi.split('doi:')[-1]
         elif doi[:4] == 'http':
             doi = doi.split('https://doi.org/')[-1]
-
+        elif doi.startswith('[') and doi.endswith(']'):
+            doi = eval(doi)
+            doi = [self.__clean_doi(d) for d in doi]
         return doi
-    
+
 def main():
     if len(sys.argv) != 2:
         print('Usage: python extractor.py <input_file>')
